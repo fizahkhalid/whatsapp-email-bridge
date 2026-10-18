@@ -50,9 +50,11 @@ export class Bridge {
       });
     }
 
+    let forwarded = false;
     for (const { bridge, chat } of matches) {
-      const emailMessage = stripLeadingPrefix(message.text, bridge.outgoingPrefix);
-      if (!emailMessage) continue;
+      const messageText = stripLeadingPrefix(message.text, bridge.outgoingPrefix);
+      if (!messageText && attachments.length === 0) continue;
+      const emailMessage = messageText || attachmentMessage(attachments.length);
       for (const email of bridge.monitoredEmails) {
         const values = templateValues({
           message: emailMessage,
@@ -78,7 +80,9 @@ export class Bridge {
         });
       }
       await this.state.markWhatsApp(whatsappStateId(bridge.id, message.id));
+      forwarded = true;
     }
+    if (!forwarded) return false;
     this.lastForwardedAt = new Date().toISOString();
     this.lastError = undefined;
     console.info(`Forwarded WhatsApp message ${message.id} to Gmail`);
@@ -149,4 +153,8 @@ function hasPrefix(text: string, prefix: string): boolean {
 
 function whatsappStateId(bridgeId: string, messageId: string): string {
   return `${bridgeId}:${messageId}`;
+}
+
+function attachmentMessage(count: number): string {
+  return count === 1 ? "Shared an image" : `Shared ${count} images`;
 }
