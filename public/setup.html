@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Set up Gmail and WhatsApp for Bridge the Gap." />
+    <title>Setup guide | Bridge the Gap</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"><i></i><i></i></span><span>Bridge the Gap</span></a>
+      <nav><a href="/configure">Configure</a><a href="/">Home</a></nav>
+    </header>
+
+    <main class="guide-shell">
+      <header class="guide-heading">
+        <p class="eyebrow">Setup guide</p>
+        <h1>Connect Gmail and WhatsApp</h1>
+        <p>Google Cloud is the only part that must be prepared outside the app. Once it is ready, accounts and message routes are managed from the configuration page.</p>
+      </header>
+
+      <section class="guide-section">
+        <div class="guide-number">1</div>
+        <div>
+          <h2>Create Google credentials</h2>
+          <ol>
+            <li>Create or select a project in Google Cloud Console.</li>
+            <li>Enable the Gmail API.</li>
+            <li>Configure the OAuth consent screen. Choose External for ordinary Gmail accounts.</li>
+            <li>While the app is in testing, add every Gmail account that may connect as a test user.</li>
+            <li>Create an OAuth client with the application type <strong>Web application</strong>.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="guide-section">
+        <div class="guide-number">2</div>
+        <div>
+          <h2>Add the callback URL</h2>
+          <p>Add this exact URL under <strong>Authorized redirect URIs</strong> in the Google OAuth client:</p>
+          <div class="copy-value"><code id="callbackUrl"></code><button id="copyCallback" type="button">Copy</button></div>
+          <p class="guide-note">For a hosted installation, use its HTTPS domain instead of localhost.</p>
+        </div>
+      </section>
+
+      <section class="guide-section">
+        <div class="guide-number">3</div>
+        <div>
+          <h2>Complete the environment file</h2>
+          <p>Copy <code>.env.example</code> to <code>.env</code>, then add the OAuth client ID and secret. Never commit the real <code>.env</code> file.</p>
+          <pre><code>GOOGLE_CLIENT_ID=your-client-id
+GOOGLE_CLIENT_SECRET=your-client-secret
+GOOGLE_REDIRECT_URI=<span id="callbackExample"></span></code></pre>
+        </div>
+      </section>
+
+      <section class="guide-section">
+        <div class="guide-number">4</div>
+        <div>
+          <h2>Connect both accounts</h2>
+          <p>Open configuration, connect Gmail, and scan the WhatsApp QR code from WhatsApp → Settings → Linked Devices. You can switch either account later.</p>
+          <a class="button" href="/configure">Open configuration</a>
+        </div>
+      </section>
+
+      <aside class="guide-warning">
+        <strong>Before using a primary WhatsApp number</strong>
+        <p>This project uses an unofficial linked-device library rather than Meta’s Business Platform. Keep message volume human-sized and understand that WhatsApp can change or restrict linked-device behavior.</p>
+      </aside>
+    </main>
+    <script>
+      const callback = `${location.origin}/auth/google/callback`;
+      document.querySelector("#callbackUrl").textContent = callback;
+      document.querySelector("#callbackExample").textContent = callback;
+      document.querySelector("#copyCallback").addEventListener("click", async (event) => {
+        await navigator.clipboard.writeText(callback);
+        event.currentTarget.textContent = "Copied";
+      });
+    </script>
+  </body>
+</html>

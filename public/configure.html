@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Configure Bridge the Gap." />
+    <title>Configure | Bridge the Gap</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="configure-page">
+    <header class="site-header">
+      <a class="brand" href="/">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
+        <span>Bridge the Gap</span>
+      </a>
+      <nav><a href="/setup">Setup guide</a><a href="/">Home</a></nav>
+    </header>
+
+    <main class="configure-shell">
+      <div class="configure-heading">
+        <div><p class="eyebrow">Configuration</p><h1>Manage your bridges</h1><p>One WhatsApp account and one Gmail account can support several separate routes.</p></div>
+        <div class="bridge-status"><span id="overallDot"></span><strong id="overallStatus">Checking status</strong></div>
+      </div>
+
+      <form class="settings-form" id="settingsForm">
+        <section class="form-section">
+          <div class="section-label"><span>1</span><div><h2>Connected accounts</h2><p>These accounts are shared by every bridge on this installation.</p></div></div>
+          <div class="connection-list">
+            <div class="connection-row">
+              <div class="service-icon whatsapp-service">W</div>
+              <div class="connection-copy"><strong>WhatsApp</strong><span id="whatsappStatus">Checking...</span></div>
+              <span class="connection-dot" id="whatsappDot"></span>
+              <button class="button-secondary" id="relinkButton" type="button">Link a different account</button>
+            </div>
+            <div class="qr-panel" id="qrPanel" hidden>
+              <div class="qr-box">
+                <img id="qrImage" alt="WhatsApp linking QR code" hidden />
+                <div class="qr-loading" id="qrLoading"><span></span><p>Preparing a secure QR code...</p></div>
+              </div>
+              <div>
+                <h3>Scan with WhatsApp</h3>
+                <ol><li>Open WhatsApp on your phone</li><li>Open Linked Devices</li><li>Tap Link a Device and scan</li></ol>
+                <p class="field-error" id="qrError"></p>
+                <button class="button-secondary" id="retryQrButton" type="button">Try again</button>
+              </div>
+            </div>
+            <div class="connection-row">
+              <div class="service-icon gmail-service">M</div>
+              <div class="connection-copy"><strong>Gmail</strong><span id="gmailStatus">Checking...</span></div>
+              <span class="connection-dot" id="gmailDot"></span>
+              <div class="connection-actions">
+                <a class="button-secondary" id="gmailConnect" href="/auth/google">Connect Gmail</a>
+                <button class="quiet-button" id="gmailDisconnect" type="button" hidden>Disconnect</button>
+              </div>
+            </div>
+          </div>
+          <p class="setup-hint">Need Google credentials first? <a href="/setup">Follow the Gmail setup guide</a>.</p>
+        </section>
+
+        <section class="form-section">
+          <div class="bridge-list-view" id="bridgeListView">
+            <div class="bridge-list-heading">
+              <div class="section-label"><span>2</span><div><h2>Bridge routes</h2><p>Each bridge connects selected WhatsApp chats to one or more email recipients.</p></div></div>
+              <button class="button create-bridge-button" id="addBridge" type="button"><span aria-hidden="true">+</span> Create bridge</button>
+            </div>
+            <div class="bridge-list" id="bridgeList"></div>
+          </div>
+
+          <div class="bridge-editor" id="bridgeEditor" hidden>
+            <div class="bridge-editor-heading">
+              <button class="back-button" id="closeBridge" type="button"><span aria-hidden="true">←</span> All bridges</button>
+              <div>
+                <p class="eyebrow">Bridge settings</p>
+                <h2 id="bridgeEditorTitle">Edit bridge</h2>
+              </div>
+            </div>
+            <div class="field-block bridge-name-field">
+              <label for="bridgeName">Bridge name</label>
+              <input id="bridgeName" placeholder="Family updates" />
+              <small>A private label that helps you tell your routes apart.</small>
+            </div>
+            <div class="field-grid">
+              <div class="field-block">
+                <label for="chatInput">WhatsApp groups or direct chats</label>
+                <div class="tag-list" id="chatTags"></div>
+                <div class="add-field">
+                  <input id="chatInput" list="availableChats" placeholder="Group name or international number" />
+                  <button type="button" id="addChat">Add</button>
+                </div>
+                <small>Use an exact group name or a phone number with country code.</small>
+              </div>
+              <div class="field-block">
+                <label for="emailInput">Email recipients</label>
+                <div class="tag-list" id="emailTags"></div>
+                <div class="add-field"><input id="emailInput" type="email" placeholder="person@example.com" /><button type="button" id="addEmail">Add</button></div>
+                <small>Only replies from these addresses return to WhatsApp.</small>
+              </div>
+            </div>
+            <div class="prefix-field">
+              <div><label for="outgoingPrefix">Message prefix</label><small>Only messages beginning with this text use this bridge.</small></div>
+              <input id="outgoingPrefix" />
+            </div>
+            <details class="format-section">
+              <summary>
+                <span><strong>Message format</strong><small>Customize the email and WhatsApp reply templates</small></span>
+                <i aria-hidden="true">⌄</i>
+              </summary>
+              <div class="format-fields">
+                <label for="emailSubjectTemplate">Email subject</label>
+                <input id="emailSubjectTemplate" />
+                <label for="emailBodyTemplate">Email body</label>
+                <textarea id="emailBodyTemplate" rows="5"></textarea>
+                <label for="whatsappReplyTemplate">Reply returned to WhatsApp</label>
+                <textarea id="whatsappReplyTemplate" rows="3"></textarea>
+                <p class="variable-help">Available: <code>{{sender}}</code> <code>{{sender_phone}}</code> <code>{{message}}</code> <code>{{message_short}}</code> <code>{{chat}}</code> <code>{{email}}</code> <code>{{subject}}</code></p>
+              </div>
+            </details>
+            <div class="bridge-editor-footer">
+              <button class="quiet-button danger-text" id="deleteBridge" type="button">Delete bridge</button>
+              <div>
+                <span id="saveState">Settings are saved locally.</span>
+                <button class="button" id="saveButton" type="submit">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </form>
+      <p class="last-check" id="lastCheck">Waiting for the first inbox check.</p>
+    </main>
+
+    <datalist id="availableChats"></datalist>
+    <dialog class="bridge-dialog" id="createBridgeDialog">
+      <form id="createBridgeForm">
+        <div class="dialog-heading">
+          <div><p class="eyebrow">New route</p><h2>Create a bridge</h2></div>
+          <button class="dialog-close" id="cancelCreateBridge" type="button" aria-label="Close">×</button>
+        </div>
+        <p class="dialog-intro">Choose where messages start, who receives them, and how the bridge recognizes them.</p>
+        <div class="dialog-fields">
+          <div class="field-block">
+            <label for="newBridgeName">Bridge name</label>
+            <input id="newBridgeName" placeholder="Family updates" required />
+          </div>
+          <div class="field-block">
+            <label for="newBridgeChat">WhatsApp group or direct chat</label>
+            <input id="newBridgeChat" list="availableChats" placeholder="Choose a chat or enter a number" required />
+          </div>
+          <div class="field-block">
+            <label for="newBridgeEmail">Email recipient</label>
+            <input id="newBridgeEmail" type="email" placeholder="person@example.com" required />
+          </div>
+          <div class="field-block prefix-dialog-field">
+            <label for="newBridgePrefix">Message prefix</label>
+            <input id="newBridgePrefix" value="!" required />
+            <small>Only messages beginning with this will be forwarded.</small>
+          </div>
+        </div>
+        <div class="dialog-actions">
+          <button class="button-secondary" id="cancelCreateBridgeBottom" type="button">Cancel</button>
+          <button class="button" id="createBridgeButton" type="submit">Create bridge</button>
+        </div>
+      </form>
+    </dialog>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="/configure.js" type="module"></script>
+  </body>
+</html>

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Bridge WhatsApp conversations and email replies." />
+    <title>Bridge the Gap</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
+        <span>Bridge the Gap</span>
+      </a>
+      <nav>
+        <a href="#how-it-works">How it works</a>
+        <a href="/setup">Setup</a>
+        <a class="button button-small" href="/configure">Configure</a>
+      </nav>
+    </header>
+
+    <main class="landing">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">A small, self-hosted bridge</p>
+          <h1>Stay in the conversation without joining every app.</h1>
+          <p class="lead">
+            I made Bridge the Gap for friends and family who prefer email while everyone else talks on WhatsApp. Messages cross over, and replies return to the conversation that started them.
+          </p>
+          <div class="hero-actions">
+            <a class="button" href="/configure">Configure your bridge</a>
+            <a class="text-link" href="#how-it-works">See how it works <span>↓</span></a>
+          </div>
+        </div>
+
+        <div class="conversation-demo" aria-label="Example conversation crossing WhatsApp and email">
+          <div class="demo-label"><span></span> One conversation</div>
+          <div class="message whatsapp-message">
+            <small>WhatsApp</small>
+            <p><strong>!</strong> Are we still meeting tomorrow?</p>
+            <time>10:14</time>
+          </div>
+          <div class="bridge-line"><span>Email delivered</span></div>
+          <div class="message email-message">
+            <small>Email reply</small>
+            <p><strong>Reply:</strong> Yes, the same time works for me.</p>
+            <time>10:16</time>
+          </div>
+          <p class="demo-note">The reply returns to the WhatsApp chat that started it.</p>
+        </div>
+      </section>
+
+      <section class="steps" id="how-it-works">
+        <div class="section-intro">
+          <p class="eyebrow">How it works</p>
+          <h2>Three steps, then it runs quietly.</h2>
+        </div>
+        <ol class="step-list">
+          <li>
+            <span>1</span>
+            <div><h3>Connect your accounts</h3><p>Link WhatsApp as a device and authorize the Gmail inbox used by the bridge.</p></div>
+          </li>
+          <li>
+            <span>2</span>
+            <div><h3>Choose conversations</h3><p>Select WhatsApp groups or add a direct chat using any international phone number.</p></div>
+          </li>
+          <li>
+            <span>3</span>
+            <div><h3>Use a simple prefix</h3><p>Only messages beginning with your chosen prefix are sent to email. Replies come back automatically.</p></div>
+          </li>
+        </ol>
+      </section>
+
+      <section class="privacy-note">
+        <div><p class="eyebrow">Self-hosted</p><h2>Your bridge runs where you choose.</h2></div>
+        <p>Account credentials, selected conversations, and templates stay on your installation. The public page never displays them.</p>
+        <a class="button button-light" href="/configure">Open configuration</a>
+      </section>
+    </main>
+
+    <footer>
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"><i></i><i></i></span><span>Bridge the Gap</span></a>
+      <p>WhatsApp conversations, continued by email.</p>
+    </footer>
+  </body>
+</html>
