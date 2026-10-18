@@ -59,6 +59,23 @@ test("routes a message through the bridge with the matching chat and prefix", as
   assert.equal(routes[0]?.route.bridgeId, "family");
 });
 
+test("does not poll Gmail before the first bridge is created", async () => {
+  const gmail = {
+    isConnected: () => true,
+    listRepliesFrom: async () => {
+      throw new Error("Gmail should not be polled without recipients");
+    },
+  };
+  const state = { getEmailThreadIds: () => [] };
+  const bridge = new Bridge(gmail as never, {} as never, state as never, {
+    get: () => ({ bridges: [] }),
+  } as never);
+
+  await bridge.pollGmail();
+
+  assert.ok(bridge.getStatus().lastGmailCheckAt);
+});
+
 function route(id: string, prefix: string, email: string) {
   return {
     id,

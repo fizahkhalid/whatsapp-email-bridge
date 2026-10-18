@@ -49,14 +49,9 @@ export class GmailClient {
   constructor(
     private readonly config: Config["gmail"],
     private readonly stateDir: string,
-  ) {
-    if (config.refreshToken) {
-      this.credentials.refresh_token = config.refreshToken;
-    }
-  }
+  ) {}
 
   async loadSavedCredentials(): Promise<void> {
-    if (this.config.refreshToken) return;
     try {
       const raw = await fs.readFile(this.tokenPath, "utf8");
       this.credentials = JSON.parse(raw) as GoogleCredentials;
@@ -70,7 +65,7 @@ export class GmailClient {
   }
 
   getAccountEmail(): string {
-    return this.credentials.account_email || this.config.accountEmail;
+    return this.credentials.account_email || "";
   }
 
   getAuthorizationUrl(state: string): string {
@@ -219,7 +214,7 @@ export class GmailClient {
       ...this.toCredentials(tokens),
       refresh_token: tokens.refresh_token ?? this.credentials.refresh_token,
     };
-    if (!this.config.refreshToken) await this.saveCredentials();
+    await this.saveCredentials();
     return this.credentials.access_token as string;
   }
 

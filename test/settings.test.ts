@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import test from "node:test";
-import { validateSettings } from "../src/settings.js";
+import { SettingsStore, validateSettings } from "../src/settings.js";
 import {
   renderEmailHtml,
   renderEmailPlainText,
@@ -27,6 +30,21 @@ test("normalizes multiple bridge settings", () => {
   const result = validateSettings(validSettings);
   assert.deepEqual(result.bridges[0].whatsappChats, ["Family chat", "+12025550147"]);
   assert.deepEqual(result.bridges[0].monitoredEmails, ["person@example.com"]);
+});
+
+test("allows a fresh installation with no bridge routes", () => {
+  assert.deepEqual(validateSettings({ bridges: [] }), { bridges: [] });
+});
+
+test("starts a fresh settings store without a manufactured bridge", async () => {
+  const directory = await fs.mkdtemp(path.join(os.tmpdir(), "bridge-settings-"));
+  try {
+    const store = new SettingsStore(directory);
+    await store.load();
+    assert.deepEqual(store.get(), { bridges: [] });
+  } finally {
+    await fs.rm(directory, { recursive: true });
+  }
 });
 
 test("requires at least one WhatsApp chat and email", () => {

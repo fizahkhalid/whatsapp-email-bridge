@@ -26,6 +26,17 @@ function markChanged() {
 
 function renderBridgeList() {
   elements.bridgeList.replaceChildren();
+  if (state.bridges.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "bridge-empty-state";
+    const title = document.createElement("strong");
+    title.textContent = "No bridges yet";
+    const copy = document.createElement("p");
+    copy.textContent = "Create a bridge to connect a WhatsApp conversation with email.";
+    empty.append(title, copy);
+    elements.bridgeList.append(empty);
+    return;
+  }
   for (const bridge of state.bridges) {
     const row = document.createElement("article");
     row.className = "bridge-list-item";

@@ -76,9 +76,6 @@ PORT=3000
 HOST=127.0.0.1
 ADMIN_PASSWORD=
 
-DEFAULT_WHATSAPP_CHAT=Family chat
-DEFAULT_RECIPIENT_EMAIL=person@example.com
-
 GOOGLE_CLIENT_ID=your-client-id
 GOOGLE_CLIENT_SECRET=your-client-secret
 GOOGLE_REDIRECT_URI=http://localhost:3000/auth/google/callback
@@ -87,7 +84,7 @@ GMAIL_POLL_INTERVAL_MS=30000
 STATE_DIR=.data
 ```
 
-The default chat and recipient only create the first bridge. After startup, routes are managed from the web interface.
+Use `HOST=0.0.0.0` and set a strong `ADMIN_PASSWORD` when hosting the app publicly. Bridge routes are created from the web interface after startup.
 
 ### 4. Start the app
 
@@ -101,7 +98,7 @@ Open:
 - Setup guide: [http://localhost:3000/setup](http://localhost:3000/setup)
 - Configuration: [http://localhost:3000/configure](http://localhost:3000/configure)
 
-Connect Gmail, then link WhatsApp by scanning the QR code from **WhatsApp → Settings → Linked Devices**.
+Connect Gmail, link WhatsApp by scanning the QR code from **WhatsApp → Settings → Linked Devices**, then create the first bridge route.
 
 ## Multiple bridges
 

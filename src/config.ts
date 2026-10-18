@@ -31,16 +31,12 @@ export function loadConfig() {
     port,
     host,
     adminPassword,
-    defaultWhatsAppChat: required("DEFAULT_WHATSAPP_CHAT"),
-    defaultRecipientEmail: required("DEFAULT_RECIPIENT_EMAIL").toLowerCase(),
     gmail: {
-      accountEmail: process.env.GMAIL_ACCOUNT_EMAIL?.trim().toLowerCase() || "",
       clientId: required("GOOGLE_CLIENT_ID"),
       clientSecret: required("GOOGLE_CLIENT_SECRET"),
       redirectUri:
         process.env.GOOGLE_REDIRECT_URI?.trim() ||
         `http://localhost:${port}/auth/google/callback`,
-      refreshToken: process.env.GOOGLE_REFRESH_TOKEN?.trim(),
       pollIntervalMs: positiveInteger("GMAIL_POLL_INTERVAL_MS", 30_000),
     },
     stateDir: path.resolve(process.env.STATE_DIR?.trim() || ".data"),

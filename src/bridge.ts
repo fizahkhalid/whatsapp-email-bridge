@@ -93,6 +93,10 @@ export class Bridge {
       const monitoredEmails = [
         ...new Set(settings.bridges.flatMap((bridge) => bridge.monitoredEmails)),
       ];
+      if (monitoredEmails.length === 0) {
+        this.lastGmailCheckAt = new Date().toISOString();
+        return;
+      }
       const replies = await this.gmail.listRepliesFrom(
         monitoredEmails,
         this.state.getEmailThreadIds(),
@@ -102,6 +106,7 @@ export class Bridge {
         const route = this.state.getEmailThread(reply.threadId);
         const bridge =
           settings.bridges.find((item) => item.id === route?.bridgeId) ?? settings.bridges[0];
+        if (!bridge) continue;
         const values = templateValues({
           message: reply.text,
           chat: route?.chatName ?? bridge.whatsappChats[0],

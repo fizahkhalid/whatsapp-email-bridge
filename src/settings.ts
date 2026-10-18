@@ -1,6 +1,5 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { Config } from "./config.js";
 
 export type BridgeRoute = {
   id: string;
@@ -20,14 +19,9 @@ export type BridgeSettings = {
 type LegacySettings = Partial<BridgeRoute> & { whatsappGroups?: string[] };
 
 export class SettingsStore {
-  private settings: BridgeSettings;
+  private settings: BridgeSettings = { bridges: [] };
 
-  constructor(
-    private readonly stateDir: string,
-    config: Config,
-  ) {
-    this.settings = { bridges: [defaultBridge(config)] };
-  }
+  constructor(private readonly stateDir: string) {}
 
   async load(): Promise<void> {
     await fs.mkdir(this.stateDir, { recursive: true });
@@ -38,7 +32,7 @@ export class SettingsStore {
       const migrated =
         "bridges" in saved && Array.isArray(saved.bridges)
           ? { bridges: saved.bridges.map(migrateBridge) }
-          : { bridges: [migrateBridge({ ...this.settings.bridges[0], ...saved })] };
+          : { bridges: [migrateBridge(saved as LegacySettings)] };
       this.settings = validateSettings(migrated);
       await this.save();
     } catch (error) {
@@ -70,9 +64,7 @@ export class SettingsStore {
 export function validateSettings(value: unknown): BridgeSettings {
   if (!value || typeof value !== "object") throw new Error("Settings must be an object");
   const input = value as Record<string, unknown>;
-  if (!Array.isArray(input.bridges) || input.bridges.length === 0) {
-    throw new Error("Add at least one bridge");
-  }
+  if (!Array.isArray(input.bridges)) throw new Error("Bridges must be a list");
   if (input.bridges.length > 25) throw new Error("You cannot create more than 25 bridges");
   const bridges = input.bridges.map((bridge, index) => validateBridge(bridge, index));
   if (new Set(bridges.map((bridge) => bridge.id)).size !== bridges.length) {
@@ -107,20 +99,6 @@ function validateBridge(value: unknown, index: number): BridgeRoute {
       "WhatsApp reply template",
       10_000,
     ),
-  };
-}
-
-function defaultBridge(config: Config): BridgeRoute {
-  return {
-    id: "default",
-    name: "My first bridge",
-    whatsappChats: [config.defaultWhatsAppChat],
-    monitoredEmails: [config.defaultRecipientEmail],
-    outgoingPrefix: "!",
-    emailSubjectTemplate: "[Bridge the Gap] {{message_short}}",
-    emailBodyTemplate:
-      "{{message}}\n\nReply to this email and your reply will be sent back to WhatsApp.",
-    whatsappReplyTemplate: "Email reply from {{email}}:\n{{message}}",
   };
 }
 

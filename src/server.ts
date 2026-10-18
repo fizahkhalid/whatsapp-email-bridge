@@ -11,7 +11,7 @@ import { LinkedWhatsAppClient } from "./whatsapp.js";
 const config = loadConfig();
 const state = new StateStore(config.stateDir);
 await state.load();
-const settings = new SettingsStore(config.stateDir, config);
+const settings = new SettingsStore(config.stateDir);
 await settings.load();
 
 const gmail = new GmailClient(config.gmail, config.stateDir);
